@@ -1,0 +1,27 @@
+Chapter 2: Predeclared Types and Declarations
+
+    In Chapter 2, its time to Start Looking at Go language features and how to best use them.
+    to figure out what best means
+        there is one overriding principle:
+            Write your programs in a way that makes your intentions clear.
+            particular approach that will produce clearer code.
+
+    2.1 The Predeclared Types
+        Go has many types built into the language. 
+        These are called predeclared types.
+        They are similar to types that are found in other languages:
+            Booleans, integers, floats and strings.
+
+        Using these types idiomatically is sometimes a challenge for developers who are transitioning
+        from another language. you'll look at these types and see how they work best in Go. Before i review
+        the types, lets cover of the concept that apply to all types
+
+        The Zero Value 
+            Go like most modern languages, assigns a default zero value to any variable that is declared
+            but not assigned a value. Having an explicit zero value makes code clearer and removes
+            a source of bugs found in C and C++ programs. 
+            There will be zero value for the types.
+            Find details on The Go Programming Language Specification.
+
+        Literals
+        

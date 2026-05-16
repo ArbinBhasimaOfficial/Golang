@@ -1,0 +1,51 @@
+Learning Go 
+
+An Idiomatic Approach to 
+Real-World Go Programming
+
+By Jon Bodner
+
+In this Learning Process there are Folders and Files Created Accordingly to the Contents
+like for chapter one folder is Chapter1 folder 
+
+go mod init is done inside the Golang File , 
+because it will make your life easier, You dont have to mod init in every folder...
+
+go mod init github.com/ArbinBhasimaOfficial/Golang
+
+
+Thats being said, Lets Begin
+
+Table Of Contents
+
+1. Setting Up Your Go Environment (Chapter1)
+
+2. Predeclared Types and Declarations (Chapter2)
+
+3. Composite Types
+
+4. Blocks, Shadows and Control Structures
+
+5. Functions
+
+6. Pointers
+
+7. Types, Methods, and Interfaces
+
+8. Generics
+
+9. Errors
+
+10. Modules, Package, and Imports
+
+11. Go Tooling
+
+12. Concurrency in Go
+
+13. The Standard Library
+
+14. The Context
+
+15. Writing Tests
+
+16. Here Be Dragons: Reflect, Unsafe, and Cgo

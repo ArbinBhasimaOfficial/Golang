@@ -1,0 +1,404 @@
+Chapter 1 : Setting Up Your Go Environment
+
+    1.1 Installing the Go Tools
+        To build Go code, you need to download and install th Go development tools.
+        Download Latest Version of the tools at the downloads page on the Go website.
+        Choose the downlaod for your platform and install it.
+            The .pkg installer for Mac 
+            The .msi installer for Windoes
+
+        If you are Mac developer, install Go using 
+            Homebrew with the command brew install go.
+            
+        For Windows developer, install Go using
+            Chocolatey with the command choco install golang. 
+
+        The various Linux and BSD installers are gzipped TAR files and expand 
+        to a directory named go. 
+        Copy directory to 
+            /usr/local and add /usr/local/go/bin to your $PATH
+        and go command will be accessible
+
+        dont copy paste..
+
+        $ tar -C /usr/local -xzf go1.26.3.linux-amd64.tar.gz 
+        (make sure to select the latest version instead of what it is shown here.)
+        $ echo 'export PATH=$PATH:/usr/local/go/bin' >> $HOME/.bash_profile
+        $ source $HOME/.bash_profile
+
+        if root premissions need to write to /usr/local 
+            if th tar command fails,
+                rerun it with,
+                    sudo tar -C/usr/local -xzf go1.26.3.linux-amd64.tar.gz
+        
+        Go programs compile to a single native binzry and do not require
+        any additional software to be installed in order to run them.
+
+        This is in contrast to language like java, pyhon, and js, which require
+        you to run virtual environment to run your program.
+
+        using a single native binary makes it a lot easier to distribute programs
+        written in go.
+
+        This Book doesn't cover containers, but developers who use 
+            Docker
+            or Kubernetes 
+            can ofter package a Go app inside a scratch or distroless image.
+        
+        Find more on Distroless or Scratch for Go Apps
+
+        If everything setup correctly:
+            go version
+                the version will show up
+                this is what mine shows as of this moment,
+                
+                go version go1.26.3 windows/amd64
+
+                if Mac
+                go version go1.26.3 darwin/amd64
+
+                if Linux
+                go version go1.26.3 linux/amd64
+    
+
+    1.2 Troubleshooting Your Go Installation
+
+        If error appears insted of version message:
+            Its likely that you don't have go in your executable path 
+                check both the system and user environment variables
+
+            or you have another named go in your path.
+
+        On macOS and Other Unix-like systems, use which fo to see the go command being executed
+        if nothing is returned you need to fix your path
+
+        if you're on linux or BSD, its possible you installed the 64 bit go development tools
+        on a 32 bit system ot the development tools for the wrong chip architecture
+
+    1.3 Go Tooling
+        All of the Go development tools are accessed via the go command
+        in addition to 
+            go version
+        there's a compiler
+            go build
+        code formatter
+            go fmt
+        dependency manager
+            go mod
+        test runner
+            go test
+        a tool that scans for common coding mistakes
+            go vet
+        compiles and installs packages
+            go install
+        adds dependencies to module                     
+            go get    
+        downloads dependencies                      
+            go mod download      
+        removes unused dependencies
+            go mod tidy                    
+        runs tests with coverage report
+            go test -cover                 
+        vet all packages
+            go vet ./...         
+        compiles and runs a program          
+            go run     
+        shows documentation                    
+            go doc           
+        lists packages              
+            go list      
+        shows dependency graph                  
+            go mod graph 
+        explains why a dependency is needed                  
+            go mod why
+        prints Go environment variables                     
+            go env
+        removes cached build files                        
+            go clean
+        starts a bug report                       
+            go bug
+        updates code to use newer APIs                         
+            go fix
+        runs generators embedded in code                         
+            go generate
+            
+        For now let's take a quick look at the most commonly used tools by writing 
+        Hello world , First application
+
+    1.4 Your First Go Program
+        Basic of writing a Go program.
+        Along the way, you will see the parts
+        that make up a simple Go program.
+
+            Making a Go Module
+                If you are making the folder structure like me than
+                    Create Golang Folder    
+                        mkdir Golang
+                        cd Golang
+
+                    inside the directory,
+                    run the go mod init command to mark this
+
+                    go mod init github.com/USERNAME/Golang
+
+                    Go project is called a module.
+                    go mod file declares the name of the module, the minimum supported version of Go for
+                    the module, and any other modules that you module depends o.
+
+                    create new folder 
+                        mkdir Chapter1
+                        cd Chapter1
+
+                    open your preferred IDE 
+                    create one more new folder for first program
+                        mkdir hello-World
+                    
+                    create new file
+                        main.go inside hello-world
+
+            Go build
+                Write some code!
+                    package main
+                    import "fmt"
+                    func main() {
+                        fmt.Println("Konnichiwa, Sekai!")
+                    }
+                    
+                you dont have to go build this code
+                you can run the program by executing 
+                    go run ./Chapter1/hello-world
+                
+                to be able to use Go Build,
+                In terminal, you have to be inside the directory where main.go is in 
+                and when inside the directory just
+                    go build
+                    and to run the program
+                    ./hello-world
+
+                If you want a different module name, 
+                use -o flag
+                    go build -o hello
+            
+            Go fmt
+                One of the chief design goal for Go was to create a language
+                that allowed you to write code efficiently.
+                This meant having simple syntax and a fast compiler.
+                it also led Go's Author to reconsider code formatting.
+
+                Most languages allow a great deal of flexibility in the way code is formatted.
+                Go does not.
+
+                Enforcing a standard format makes it a great deal easier to write tools
+                that manipulate source code.
+                
+                This simplifies the compiler and allows the creation of some clever tools for generating code.
+                
+                There is a secondary benefit as well. 
+                Developer have historically wasted extraordinary amounts of time on format wars.
+                Since Go defines a standard way of formatting code, Go developers avoid arguments over
+                brace style and tabs versus spaces.
+
+                For example, Go programs use tabs to indent, and it is a syntax error if the opening
+                brace is not on the same line as the declaration or command that begins the block.
+
+                Many Go developers think the Go team defined a standard format as a way to avoid developer
+                arguments and discovered the tooling advantages later.
+
+                Russ Cox, the development lead for Go, has publicly stated that better tooling was
+                his original motivation.
+
+                The Go development tools include a command, go dmt, which automatically fixes the 
+                whitespace in your code to match the standard formatted.
+
+                however it can't fix braces on wrong line.
+                Run it with the following
+                    
+                    go fmt ./...
+                    Chapter1\hello-world\main.go
+                
+                using ./... tells a Go tool to apply the command to all the files in the current directory
+                and all subdirectories.
+
+                fmt.Println will automatically indent with a single tab.
+
+                Remember to run go fmt before you compile your code, and, at the very least
+                before you commit source code changes to your repo
+                if you forget, make a seperate commit that does only go fmt ./...
+
+
+                        The Semicolon Insertion Rule
+            The go fmt command won't fix braces on the wrong line because of the semicolon insertion rule.
+            Like C or Java, Go requires a semicolon at the end of every statement.
+            However, Go developers should never put the semicolons in themselves.
+            The Go compiler adds them automatically, following a simple rule described in Effective go.
+
+                    An identifier (which includes words like int and float64)
+                    A basic literal such as a number or string constant
+                    One of the tokens: break, continue, fallthrough, return, ++, --, ), or }
+
+            With this simple rule in place, you can see why see putting a brace in the wrong place
+            breaks.
+
+                    func main(){
+                        fmt.Println("Hello, world!")
+                    }
+                
+            the semicolon insertion rule sees the ) at the end of the func main() line and turns that into:
+
+                    func main();
+                    {
+                        fmt.Println("Hello, world!");
+                    };
+                    
+                    And that's not valid Go.
+            The semicolon insertion rule and the resulting restriction on brace placement is one of the things
+            that makes the Go compiler and faster, while at the same time enforcing a coding style.
+
+            go vet 
+                    In one class of bugs, the code is syntactically valid but quite likely incorrect.
+                    the go tool includes a command called go vet to detect these kind of errors.
+                    Add one to the program and watch it get detected. Change the fmt.Println to 
+                    
+                    fmt.Printf("Konnichiwa, %s!\n")
+                    Chapter1\hello-world\main.go:6:26: fmt.Printf format %s reads arg #1, but call has 0 args
+
+                    now fmt.Printf("Konnichiwa, %s!\n", "sekai")
+                    this is the correct way to fmt.Printf
+
+                    while go vet catches several common programming errors, there are things that it cannot
+                    detect. luckily, third party Go code quality tools can close the gap.
+                    Some of the most popular code quality tools are covered in 
+
+                    "Using Code Quality Scanners"
+
+                    Just as you should  run go fmt to make sure your code is formatted properly
+                    run go vet to scan for possible bugs in valid code.
+
+                    Effective Go and the Code Review Comments page on Go's wiki to understand 
+                    what idiomatic Go code looks 
+        
+    1.5 Choose Your Tools
+        While you wrote a small Go program using noting more than a text editor
+        and then go command, you'll probably want more advanced tools when working on larger projects.
+
+        Go IDEs provide many advantages over text editors, 
+        including automatic formattingon save, code completion, type checking, error reporting, and 
+        integrated debugging.
+                
+        Excellent Go development tools are available for most text editors and IDEs.
+
+         recommend Cursor..
+
+        Cursor is Very Good Addition of Vs Code Environment
+
+    1.6 Makefiles
+        create an Makefile
+            .DEFAULT_GOAL := build
+
+            .PHONY:fmt vet build
+            fmt:
+                    go fmt ./...
+            vet: fmt
+                    go fmt ./...
+            build: vet
+                    go build
+            
+        so to run the Makefile in window installed from Chocolatey
+            choco install make
+                PS D:\ArbinBhasimaOfficial\Golang\Chapter1\hello-world> make
+                go fmt ./...
+                go fmt ./...
+                go build
+                PS D:\ArbinBhasimaOfficial\Golang\Chapter1\hello-world> ./hello-world
+                Konnichiwa, sekai!
+            
+        learn more about writing Makefiles go to tutorial by Chase Lambert
+
+    1.7 The Go Compatibility Promise
+        As with all programming languages, the Go development tools are periodically updated.
+        The Go Compatibility Promise is a detailed description of how the Go team plans to avoid breaking Go
+        code. 
+        Compatibility: How Go Programs Keep working
+
+        This guarantee doesn't apply to the go commands. There have been backward incompatible changes to
+        the flags and functionality of the go commanfs, and its entierly possible that it will happen again.
+
+
+    1.8 Staying Up - to - Date
+        Go programs compile to a standalone native binary, so you don't need to worry that updating
+        your development environment could cause your currently deployed programs to fail.
+        Latest installer: https://golang.org/dl
+
+                    mv /usr/local/go/usr/local/old-go
+                    tar -C /usr/local -xzf go1.26.3.linux-amd64.tar.gz
+                    rm -rf /usr/local/old-go
+
+    
+    1.9 Exercises
+
+        1. Take hello world program to The Go Playground. I have no friends who want to learn Golang. Sadge...
+            Konnichiwa, sekai!
+
+            Program exited.
+        
+        2. Add a target to the Makefile called clean that removes the hello_world binary and
+        any other temporary files created by go build. Take a look at the Go command docs to 
+        find a go command to help implement this.
+            .PHONY:fmt vet build clean
+            fmt:
+                    go fmt ./...
+            vet: fmt
+                    go fmt ./...
+            build: vet
+                    go build
+            clean: 
+                    go clean -cache
+                    
+            PS D:\ArbinBhasimaOfficial\Golang\Chapter1\hello-world> make clean
+            go clean -cache
+
+        3. Experiment with modifying the formatting in the "Hello, world!" program. Add blank lines,
+        spaces, change indentation, insert newlines. after making a modification, run go fmt to see if
+        the formatting change is undone. Also, run go build to see if the code still compiles.
+        you can also add additional fmt.println calls so you can see what happens if you put blank lines in the
+        middle of functions
+            package main
+
+            import "fmt"
+
+            func main() {
+                fmt.Printf("Konnichiwa, %s!\n", "sekai")
+                fmt.Printf("Konnichiwa, %s   no mina sama\n", "sekai")
+                fmt.Printf("Watashi wa, %s____\n", "Zion")
+                fmt.Printf("Anata wa, %s?\n", "Baka Desu ka")
+            }
+            PS D:\ArbinBhasimaOfficial\Golang\Chapter1\hello-world> make clean
+            go clean -cache
+            PS D:\ArbinBhasimaOfficial\Golang\Chapter1\hello-world> make
+            go fmt ./...
+            go fmt ./...
+            go build
+            PS D:\ArbinBhasimaOfficial\Golang\Chapter1\hello-world> ./hello-world
+            Konnichiwa, sekai!
+            Konnichiwa, sekai   Tan
+            Watashi wa, Zion____
+            PS D:\ArbinBhasimaOfficial\Golang\Chapter1\hello-world> make clean
+            go clean -cache
+            PS D:\ArbinBhasimaOfficial\Golang\Chapter1\hello-world> make
+            go fmt ./...
+            go fmt ./...
+            go build
+            PS D:\ArbinBhasimaOfficial\Golang\Chapter1\hello-world> ./hello-world
+            Konnichiwa, sekai!
+            Konnichiwa, sekai   no mina sama
+            Watashi wa, Zion____
+            Anata wa, Baka Desu ka?
+
+
+    2.0 Wrapping Up
+        Key takeaways are:
+            You learned how to install and configure your Go development environment.
+            You also learned about tools for building Go programs and ensuring code quality
+            Now that your environment is ready, you're on to the next chapter,
+            where you'll explore the build in types in Go and how to declare variables.
+            
