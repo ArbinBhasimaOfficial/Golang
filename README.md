@@ -13,13 +13,14 @@ A comprehensive Go (Golang) learning repository covering fundamental to advanced
 Golang/
 ├── go.mod                    # Go module definition
 ├── README.md                 # This file
-├── Notes.txt                 # General notes
-├── Chapter1/                 # Chapter 1: Hello World & Basics
+├── CLAUDE.md                 # Claude Code context
+├── Notes.txt                 # Table of contents
+├── Chapter1/                 # ✅ COMPLETED - Hello World & Basics
 │   ├── Notes.txt
 │   └── hello-world/
 │       ├── main.go           # First Go program
 │       └── Makefile          # Build automation
-└── Chapter2/                 # Chapter 2
+└── Chapter2/                 # 🔄 IN PROGRESS - Predeclared Types
     ├── Notes.txt
     └── Makefile
 ```
@@ -55,10 +56,11 @@ go test            # Run tests
 
 ## Topics Covered
 
-| Chapter | Topics |
-|---------|--------|
-| Chapter 1 | `fmt.Printf`, basic syntax, Makefiles |
-| Chapter 2 | (See Notes.txt) |
+| Chapter | Status | Topics |
+|---------|--------|--------|
+| Chapter 1 | ✅ Complete | `fmt.Printf`, format verbs, Go tooling, Makefiles, Go fmt, go vet |
+| Chapter 2 | 🔄 In Progress | Predeclared types, Zero values, Literals |
+| Chapter 3+ | 📚 Upcoming | Composite types, Functions, Pointers, Interfaces, Concurrency, etc. |
 
 ## Go Development Tools
 

@@ -24,4 +24,163 @@ Chapter 2: Predeclared Types and Declarations
             Find details on The Go Programming Language Specification.
 
         Literals
-        
+            A Go literal is an explicitly specified number, character, or string. Go programs have four
+            common linds of literals. with fifth rare kind of literal
+
+            An Integer literal is a sequence of numbers.
+            Integer literal are base 10 by default, but different prefixes are used to indicate
+            other bases: Ob for binary (base 2)m Oo fir octal(base 8), or Ox for hexadecimal (base 16).
+            you can use either upper or lowercase letters for the prefix. A leading O with no letter after it 
+            is another way to represent an octal literal. 
+            Do not use it 
+
+            To make it easier to read integer literals, Go allows you to put underscores
+            in the middle of your literal. this allows you to group by thousands in base 10 (1_234)
+
+            these underscores have no effect on the value of the number
+            the only limitations on underscores are that they can't be at the beginning or end of numbers 
+            you can't have them next to each other as well 
+
+            you could put an underscores between every digit 
+            for e.g 1_2_3_4
+            but dont do it  
+            use them to improve readability by breaking up base 10 numbers at the thousands place or to break up 
+            binary, octal, or hexadecimal numbers at 1-,2-,or 4-byte boundaries  
+
+
+            A floating-point literal has a decimal point to indicate the fractional portion of the 
+            value. They can also have an exponent specified with the letter e and a positive or negative
+            number (such as 6.03e23). You also have the option to write them in hexadecimal by using the 0x prefix.
+            and letter p for indicating any exponent (0x12.34p5, which is equal to 582.5 in base 10). 
+            as integer literals you can use underscores to format your floating point literals
+
+            A rune literal represents a character and is surrounded by single quotes. Unlike many other languages
+            in Go single quotes and double quotes are not interchangeable. Rune literals can be written as single.
+            Unicode characters ('a'), 8 bit octal numbers ('\141'), 8-bit hexadecimal numbers ('\x61'),
+            16-bit hexadecimal numbers ('\u0061'), or 32 -bit Unicode numbers ('U00000061'). 
+            There are also several backslash excaped rune literals, with the most useful ones being newline ('\n'),
+            tab ('\t'), single quote ('\''), and backslash ('\\')
+
+
+            Practically speaking, ue base 10 to represent your integer and floating point literals
+            Octal representations are rare, mostly used to represent POSIX permission flag values
+            such as Oo777 for rwxrwxrwx. hexadecimal and binary are sometimes used for bit filters
+            or networking and infrastructure applications.
+
+
+            There are two ways to indicate string literals.
+            Most of the time, you should use double quotes to create an interpreted string literal
+            e.g : 
+                "Greetings and Salutations"
+            
+            These contain zero or more rune literals. they are called interpreted 
+            becuase they interpret rune literals numeric and backslash excaped
+            into a single characters..
+                One rune literal backslash excaped is not legal in a string literal:
+                the single quotes excape it is replace by a backslash excape for double quotes
+
+            The only characters that cannot appear in an interpreted string literal are unescaped backslashes,
+            unescaped newlines, and unescaped double.
+            if you use an interpreted string literal and want your greetings on a different line from  your
+            Salutations and want "salutations" to appear in quotes, you need to type 
+                "Greetings and\n\"Salutations\"".
+            
+            If you need to include backslashes, double quotes, or newlines in your string, using 
+            a raw string literal is easier. These are delimited with backquotes(`) and can contain
+            any character except a backquote. 
+            Ther is no excape character in a raw string literal 
+            all characters are included as is 
+            When using raw string literal, 
+            you write a multiline greeting like so:
+            `Greetings and
+            "Salutations"`
+
+            Literals are cansidered untyped...
+
+        Booleans
+            The bool type represents Boolean variables. Variables of bool type can have one of two values:
+            true or false.
+            The zero value for a bool is false.
+
+                var flag bool // no value assigned, set to false
+                var isAwesome = true
+
+        Numeric Types
+            Go has a larger number of numeric types:
+                12 types (and a few special names) that are grouped into three categories.
+
+            Interger types
+                Go provides both signed and unsigned integers in a variety of sizes, from one 
+                to eight bytes 
+                    type name       Value range
+                    int8            -128 to 127
+                    int16           -32768 to 32767
+                    int32           -2147483648 to 2147483647
+                    int64           -9223372036854775808 to 9223372036854775807
+                    uint8           0 to 255
+                    uint16          0 to 65535
+                    uint32          0 to 4294967295
+                    uint64          0 to 18446744073709551615
+
+                The Special Type integer types
+                    Go does have some special names for integer types. 
+                    A byte is an alias for uint8
+                    it is legal to assign, compare or perform mathematical operations between a byte and a unit8
+                    however, you rarely see uint8 used in Go code; just call it a byte.
+
+                    The second special name is int. On a 32 bit CPU, int is a 32bit signed integer like an int32
+                    On must 64 bit cpus, int is a 64 bit signed integer, just like an int64 
+                    because int isn't consistent from platform to platform, it is compile time error to assign compare or perform
+                    mathematical operations between an int and an int32 
+                    or int64 without a type conversion. integer literals default to being of int types.
+
+                    The third special name is uint.
+                
+                Choosing which integer to use
+                    Go provides more integer types than some other languages. Given all these choices
+                    you might wonder when you should use each of them. 
+
+                        if you are working with binary file format or network protocol that has an integer of specific sizes
+                        or sign, use the corresponding integer type
+
+                        if you are writing a library function that should work with any integer type, take advantages of
+                        Go generics support and use a generic type parameter to represent any integer type
+
+                        in all other cases, just use int
+
+                        FormatInt and FormatUint in the strconv package to see the pattern
+                    
+                Integer operators
+                    Go integer support the usual arithmetic operators:
+                        +, -, *, /, with % for modules.
+
+                    don't divide an integer with 0.
+
+                    you can combine any of arithmetic operators with = to modify a variable
+
+                    +=, -=, *=, /=, and %=, 
+                    for e.g:
+                        var x int = 10
+                        x *= 2
+
+                    compare integers with 
+                        ==, !=, >, >=, <, and <=
+
+                    Go also has bit-manipulation operators for integers
+                    bit shift left << and right >>
+                    bit mask 
+                        & bitwise AND,
+                        | bitwise OR,
+                        ^ bitwise XOR,
+                        &^ bitwise AND not
+
+                    as with arithmetic operators you can also combine all 
+                    the bitwise operators with = to modify variable:
+
+                    &=, |=, ^=, &^=, <<=, and >>=
+
+
+            Floating-point types 
+                
+                    
+                
