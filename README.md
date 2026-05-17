@@ -446,6 +446,12 @@ func main() {
 }
 ```
 
+
+done upto Chapter 3
+make
+
+
+
 ---
 
 # Go Development Tools

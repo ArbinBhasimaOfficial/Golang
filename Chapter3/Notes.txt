@@ -1,0 +1,281 @@
+Chapter 3 : Composite Types
+
+Composite types in Go
+
+the built in functions that support them, and the best practices for working with them
+
+
+3.1 Arrays -- Too Rigid to Use Directly
+    Like most programming languages, 
+    Go has arrays. However, arrays are rarely used directly in Go.
+    You'll learn why in a bit, but first let's quickly cover array declaration
+    syntax and use 
+
+    All elements in the array must be of the type that's specified. 
+    There are a few declaration styles. 
+    you can specify the size of the array and the type of the elements in the array:
+
+    var x [3]int
+
+    this creates an array of three ints.
+    if no value assign always 0 values of arrays
+
+    to assign value 
+    var x = [3]int{10,20,30}
+
+    if you have a sparse array an arrau where most elements are set to their zero value 
+    then 
+    var x = [12]int{1, 5:4, 6, 10:100, 15}
+
+    this creates an  array of 12 ints with the following valuse:
+    [i,0,0,0,0,4,6,0,0,0,100,15]
+
+    when using an array literal to initialize an array, you can replace the number that specifies
+    the number of elements in  the array with ...
+
+    var x = [...]int{10,20,30}
+
+    you can use == and != to compare two arrays. Arrays are equal if they are the same length and contain equal values:
+    var x = [...]int{1,2,3}
+    var y = [3]int{1,2,3}
+    fmt.Println(x == y) //prints true
+
+    Go has only one dimensional arrays, but you can simulate multidimensional arrays 
+
+    var x [2][3]int
+
+    This declares x to be an array of length 2 whose type is an array of ints of length 3.
+    This sounds pedantic, but some languages have true matrix support, like Fortran or Julia
+    Go isn't one of them
+
+    like most languages arrays in Go are read and written using bracket syntax
+
+    x[0] = 10
+    fmt.Println(x[2])
+
+    you cannot read or write past the end of an array or use a negative index. 
+    
+    finally the built in function len takes in an array and return its length 
+        fmt.Println(len(x))
+
+    Arrays are rarely used explcitly. because of various limitations
+
+    Go considers the size of the array to be part of the type of the arrays.
+    This makes an array thats declared to be [3]int a different type from an array
+    that's declared to be [4]int. this also means that you cannot use a variable
+    to specify the size of an array, because types must be resolved at compile time not at 
+    runtime
+
+    you can't use type conversion to directly convert arrays of different sizes to identical types.
+    cuz you can't convert arrays of diff sizes into each other,
+    you can't write a function that works with arrays of any size and you can't assign arrays of diff sizes to the 
+    same variable
+
+3.2 Slices
+    Slices are the type where, when you want a data structure that holds a sequence of values, a slice
+    is what you should use. what makes slices so useful is that you can grow slices as needed.
+    This is because the length of a slice is not part of its types.
+
+    working with slices looks a lot like arrays but subtle diff exist
+    the first thing to notice is that you dont specify the size of the slice when you declare its
+
+    var x = []int{10, 20, 30}
+                Using [...] makes an array. Using [] makes a slice
+
+    This creates a slice of three ints using a slice literal.
+
+
+    specifying only the indices with nonzero values in the slice literal
+
+    var x = []int{1, 5:4, 6, 10:100, 15}
+
+    this creates a slice of 12 ints with the following values: 
+    [1,0,0,0,0,4,6,0,0,0,100,15]
+
+    you can simulate multidimensional slices and make a slice of slices: 
+    var x [][]int
+
+    you read and write slices using bracket syntax, and, just as with  arrays, you can't read or write past the
+    end or use a negative index.
+
+    x[0] = 10
+    fmt.Println(x[2])
+
+    so far, slices have seemed identical to arrays. you start to see the diff between arrays and slices when you look
+    at declaring slices without using a literal:
+
+    var x []int
+
+    This creates a slice of ints. Since no value is assigned, x is assigned the zero value for 
+    a slice, which is nil 
+    nil is an identifier that represnts the lack of a value for some types. like the
+    untyped numeric constants. 
+    nil has no type so it can be assigned or compared against values of different types.
+
+    a nil slice contains nothing.
+
+    A slice is the first type you've seen that isn't comparable. 
+    it is a compile time error to use  == to see if two slices are identical or != to see if they are different
+    the only thing to compare slice to is == is nil.
+
+    fmt.Println(x==nil) //prints
+
+    Ordering Comparison 
+    slices.Compare(s1,s2) // Lexicographical ordering for ordered types
+    slices.CompareFunc(s1,s2,cmp) // Custom ordering comparison
+
+    and Equality Comparison
+    slices.Equal(s1, s2) // Exact equality check
+    slices.EqualFunc(s1, s2, eq) // Custom equality check
+
+    x := []int{1,2,3,4,5}
+    y := []int{1,2,3,4,5}
+    z := []int{1,2,3,4,5,6}
+    s := []string{"a","b","c"}
+    t := []string{"A", "B", "C"}
+	fmt.Println(slices.Equal(x, y))
+	fmt.Println(slices.Equal(x, z))
+	// fmt.Println(slices.Equal(x, s)) // doesnot compile
+	fmt.Println("EqualFunc(s, t):",
+		slices.EqualFunc(s, t, func(a, b string) bool {
+			return strings.EqualFold(a, b)
+		}),
+	)
+	fmt.Println("Compare(x, y):", slices.Compare(x, y)) // 0
+	fmt.Println("Compare(x, z):", slices.Compare(x, z)) // -1
+	fmt.Println("Compare(z, x):", slices.Compare(z, x)) // 1
+	fmt.Println("CompareFunc(s, t):",
+		slices.CompareFunc(s, t, func(a, b string) int {
+			return strings.Compare(
+				strings.ToLower(a),
+				strings.ToLower(b),
+			)
+		}),
+	)
+
+    the reflect package contains a function called DeepEqual that can compare almost anything, including slices
+    its a legacy function primarily intended for testing. Before the inclusion of slices.Equal
+    and slices.EqualFunc, reflect.DeepEqual was often used to compare slices. don't use it in new code
+
+3.3 len
+    Go providers several built in function to work with slices. you've already seen the built in len function
+    when looking at arrays. it works for slices too. passing a nil slice to len returns 0
+
+    Functions like len are built into Go because they can do things that can't be done bt the functions that you
+    can write.
+
+
+3.4 append
+
+    The built in append function is used to grow slices
+
+    var x []int
+    x = append(x,10) // assign result to the variable that's passed in
+
+    the append function takes at least two parameters, a slice of any type and a value of that type 
+    it returns a slice of the same type which is assigned to the variable that was passed to append
+
+    appending a nil slice
+
+    var x = []int{1,2,3}
+    x = append(x,4)
+
+    you can append more than one value at a time
+
+    x = append(x,5,6,7)
+
+    one slice is appended onto another by using the ... operator to expand the source slice 
+    into individual values 
+
+    y := []int{20,30,40}
+    x = append(x, y...)
+
+    call-by-value language 
+    every time you pass a parameter to a function, Go makes a copy of the value that's passed in.
+    
+3.5 Capacity
+    A slice is a sequence of values. each element in a slice is assigned to consecutive memory locations
+    which makes it quick to read or write these values.
+
+    the length of a slice is the number of consecutive memory locations that have been assigned a value.
+
+    every slice also has a capacity, which is the number if consecutive memory locations reserved.
+
+    this can be larger than the length
+
+    The values in the original backing array are copied to the new one, 
+    finally the updated slice is returned.
+
+
+    The Go runtime
+
+    Every high-level language relies on a set of libraries to enable programs written in that language 
+    to run, and Go is no exception.
+    The Go runtime provides service like memory allocation and garbage collection, concurrency support, 
+    networking and implementations of built in types and functions.
+
+    th Go runtime is compiled into every Go binary.
+    this is diff from languages that use a virtual machine
+
+    when a slice grows via append, it takes time for the Go runtime to allocate new memory and copy 
+    the existing data from the old memory to the new.
+
+    the old memory also needs to be garbage collected. 
+    A bigger slice increases by (current_capacity + 768)/4.
+
+    This slowly converges at 25% growth (a slice with capacity of 512 will grow by 63%, but a slice with capacity 4,096 
+    will grow by only 30%)
+
+    var x []int
+	fmt.Println(x, len(x), cap(x))
+	x = append(x, 10)
+	fmt.Println(x, len(x), cap(x))
+	x = append(x, 20)
+	fmt.Println(x, len(x), cap(x))
+	x = append(x, 30)
+	fmt.Println(x, len(x), cap(x))
+	x = append(x, 40)
+	fmt.Println(x, len(x), cap(x))
+	x = append(x, 50)
+	fmt.Println(x, len(x), cap(x))
+
+    PS D:\ArbinBhasimaOfficial\Golang\Chapter3\len_cap> ./len_cap
+    [] 0 0
+    [10] 1 1
+    [10 20] 2 2
+    [10 20 30] 3 4
+    [10 20 30 40] 4 4
+    [10 20 30 40 50] 5 8
+
+3.6 make
+    You've already seen two ways to declare a slice, using a slice literal or the nil zero value.
+    x := make([]int,5)
+
+    This creates an int slice with a length of 5 and a capacity of 5.
+
+    x := make([]int, 5)
+    x = append(x, 10)
+
+    the 10 is placed at the end of the slice, after the zero values in elements 0 - 4 because append always
+    increases the length of a slice. 
+    the value of x is now [0 0 0 0 0 10],
+    with a length of 6 and a capavity of 10
+
+    you can also specify an initial capacity with make
+
+    x := make([]int, 5, 10)
+
+    this creates an int slice with a length of 5 and a capacity of 10
+    you can also create a slice with zero length but a capacity that's greater than zero 
+
+    x := make([]int, 0, 10)
+
+    you have a non nil slice with a length of 0 but a capacity of 10. 
+
+    x := make([], 0, 10)
+    x = append(x, 5,6,7,8)
+
+    the value of x is now [5 6 7 8], with length of 4 and a capacity of 10
+
+
+3.7 Emptying a Slice
