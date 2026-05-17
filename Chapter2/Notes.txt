@@ -181,6 +181,441 @@ Chapter 2: Predeclared Types and Declarations
 
 
             Floating-point types 
-                
+                Go has two floating point types
+
+                type name       largest absolute value                          smallest absolute value
+                float32         3.40282346638528859811704183484516925440e+38    1.401298464324817070923729583289916131280e-45
+                float64         1.797693134862315708145274237317043567981e+308  4.940656458412465441765687928682213723651e-324
+
+                floating point in Go is similar to floating point math in other languages.
+                Go uses the IEEE 754 specification, giving a large range and limited precision.
+                picking which floating point type to use is straightforward
+                unless you have to be compatible with an existing format, use float64.
+                floating-point literals have a default type of float64,
+                so always using float64 is the simplest option.
+                it also helps mitigate floating point accuracy issues since a float32 has only six or seven deciaml digits of precision.
+
+                You can use all the standard mathematical and comparison operators with floats, except % floating-point
+                division has a couple of interesting properties.
+                Dividing a none zero floating point variable by 0 returns +Inf or -Inf, depending on the sign of the number
+                dividing a floating point variable set to 0 by 0 returns Nan.
+
+                while Go lets you use == and != to compare floats, dont do it. Because of the inexact nature of floats, two floating
+                point values might not be equal when you think they shuold be.
+
+                This value sometimes called epsilon depends on your accuracy needs 
+                I can't give you a simple rule. if you aren't sure, consult your friendly local mathematician for advice.
+
+                Complex types (you're probably not going to use these)
+                    There is one more numeric type and it is pretty unusual. 
+                    Go has first class support for complex numbers.
+
+                    There isn't a lot to the complex number support in Go.
+                    Go defines two complex number types.
+
+                    complex64 uses float32 values to represent the real and imaginary part,
+                    complex128 uses float64 values.
+
+                    var complexNum = complex(20.3, 10.2)
+                    Go uses a few rule to determine the type of the value returned by complex
+                        if you use untyped constants or literals for both function parameters, you'll 
+                        create an untyped complex literal, which has a default type of complex128
+
+                        if both values passed into complex are of float32 type, you'll create a complex64
+
+                        if one value is a float32 and the other value is an untyped constant or literal that can fit
+                        within a float32, you'll create a comnplex64
+
+                        otherwise, you'll create a complex128
+
+                        all the standard floating point arithmetic operators work on complex 
+                        numbers.
+                        you can use 
+                            == or != to compare them
+
+                        you can extract the real and imaginary portions of a complex number with 
+                        the real and imag built in functions 
+
+                        The math / cmplx package has additional functions for manipulating complex128 values
+
+
+                        func main() {
+                            x := complex(2.5, 3.1)
+                            y := complex(10.2, 2)
+                            fmt.Println(x + y)
+                            fmt.Println(x - y)
+                            fmt.Println(x * y)
+                            fmt.Println(x / y)
+                            fmt.Println(real(x))
+                            fmt.Println(imag(x))
+                            fmt.Println(cmplx.Abs(x))
+                        }
+
+                        output 
+                        (12.7+5.1i)
+                        (-7.699999999999999+1.1i)
+                        (19.3+36.62i)
+                        (0.2934098482043688+0.24639022584228065i)
+                        2.5
+                        3.1
+                        3.982461550347975
+
+                        You can see floating point imprecision on display here too.
+                        In case you were wondering what the fifth kind of primitive literal was,
+                        Go supports imaginary literals to represent the imaginary portion of a complex numbers.
+                        they look just like floating point literals, but they have an i for a suffix
+
+                        you might be wondering why Go includes complex numbers. The answer is simple 
+                        Ken thompson, one of the creators of Go, thought they would be interesting
+
+                        If you do want to write numerical computing applications in Go, you can
+                        use the third party Gonum package. it takes adv of complex numbers and provides
+                        useful libraries for things like linear algebra, matrices, integration, and statistics.
+
+                A Taste of Strings and Runes
+                    Go includes strings as a build in type.
+                    The zero value for a string is the empty string. 
+                    Go supports unicode as literals
+
+                    Unicode character into a string
+                    like integers and floats, strings are compared for equality using ==,
+                    difference with !=, or 
+                    ordering with >,>=,<,or<=
+                    They are concentrated by using the + operator.
+
+                    Go also has a type that represents a single code point 
+                    The rune type is an alias for int32 type just as byte 
+                    is an alias for uint8.
+
+                    As you could probably guess, a rune literals default type is a rune, and a string literal
+                    default type is a string.
+
+                    var myFirstInitial rune = 'J' // good - the type name matches the usage
+                    var myLastInitial int32 = 'B' // bad - legal but confusing
+
+                    i am going to talk a lot more about strings in the next chapter, covering some implementation
+                    details, relationships with bytes and runes, as well as advanced features and pitfalls
+
+                Explicit Type conversion.
+                    Automatic type promotion
+                        Type Conversions
+
+                        var x int = 10
+                        var y float64 = 30.2
+                        var sum1 float64 = float64(x) + y
+                        var sum2 int = x + int(y)
+                        fmt.Println(sum1, sum2)
+
+                        integer type conversion.
+
+                        var x int = 10
+                        var b byte = 100
+                        var sum3 int = x + int(b)
+                        var sum4 byte + byte(x) + b
+                        fmt.Println(sum3, sum4)
+
+                        if you want to convert from another data type to boolean,
+                        you must use one of the comparison operators
+
+                        (==, !=, >,<,<=, or >=)
+
+                        for e.g :
+                            to check if variable x is equal to 0, the code would 
+                            be x == 0.
+
+                            if you want to check if string s is empty use s == ""
+
+                Literals Are Untyped
+                    While you can't add two integer variables together if they are declared to be of different types
+                    of integers,
+                    Go lets you use an integer literal in floating point expressions or even assign an integer literal
+                    to a floating point variable
+
+                        var x float64 = 10
+                        var y float64 = 200.3 * 5
                     
+                var Versus :=
+                    The most verbose way to declare a variable in Go uses the var keyword, an explicit type 
+
+                    var x int = 10
+
+                    if the type on the righthand side of thee = is the expected type of your variable
+
+                    var x = 10
+
+                    Conversly, if you want to declare a variable and assign it the zero value
+
+                    var x int 
+
+                    you can declare multiple variables at once with var, 
+                    var x, y int = 10, 20
+
+                    you can declare all zero values of the same type
+
+                    var x, y int
+
+                    or of different types:
+
+                    var x, y = 10, "hello"
+                        
+                    there ones more way to use var. if you are declaring multiple variables at once
+                    you can wrap them in declaration list
+
+                    var (
+                        x int
+                        y = 20
+                        z int =30
+                        d, e = 40, "hello"
+                        f, g string
+                    )
+
+                    go also supports a short declaration and assignment format.
+                    when you are within a function, you can use the
+                    := operator to replace a var declarationo that uses type 
+                    inference.
+
+                    var x = 10
+                    x := 10
+
+                    as with var, you can declare multiple variables at once using :=
+                    these two lines both assign 10 to x and "hello" to y
+
+                    var x,y  = 10, "hello"
+                    x, y := 10, "hello"
+
+                    the := operator can do one trick that you cannot do with var: it
+                    allows you to assign values to existing variables too.
+
+                    x := 10 
+                    x, y := 30, "hello"
+
+                    using := has one limitation. 
+                    if you are declaring a variable at the package level, 
+                    you must use var because := is not legal outside of functions
+
+                    when initializing a variable to its zero value, use var x int.
+                    this makes it clear that the zero value is intended
+
+                    when assigning an untyped constant or a literal to a variable and the 
+                    default type for the constant or literal isn't the type you want for the variable 
+                    use the long var form with the type specidied. 
+                    While it is legal to use a type conversion to specify
+                    the type of the value and use := to write x := byte(20), it is idiomatic to write var x 
+                    byte = 20
+
+                    because := allows you to assign to both new and existing variables, it sometimes creates new
+                    variables when you think you are reusing existing ones.
+                    Explicitly declare all your new variables with var to make it clear which variables are new,
+                    and then use the assignment operator (=) to assign values to both new and old variables
+
+                    you should rarely declare variables outside of functions, in which called
+                    the package block
+
+                    package-level variables whose values change are a bad idea. when you have a variable
+                    outside of a function, it can be difficult to track the changes made to it,
+
+                    whicha makes it hard to understand how data is flowing
+                    through your programs.
+
+                    Avoid declaring variables outside of functions because they complicate data flow analysis
+
+                using const 
+                    package main
+
+                    import "fmt"
+                    
+                    const x int64 = 10
+                    
+                    const (
+                        idKey   = "id"
+                        nameKey = "name"
+                    )
+                    
+                    const z = 20 * 10
+                    
+                    func main() {
+                        const y = "hello"
+                        fmt.Println(x)
+                        fmt.Println(y)
+                        // x = x + 1 // this will not compile
+                        // y = "bye" // this will not compile
+                        fmt.Println(x)
+                        fmt.Println(y)
+                    }
                 
+                    Be aware that const in Go is very limited. Constants in Go are way to give names
+                    to literals.
+                        Numeric literals
+                        true and false
+                        Strings
+                        Runes
+                        The values returned by the built in functions complex, real, imag, len and capfirst
+                        Expressions that consist of operators and the preceding values
+
+                    Go doesn't provide a way to specify that a value calculated at runtime is immutable
+                    for e.g:
+                        the following code will fail to compile with the error 
+                            x + y is not constant 
+
+                            x := 5
+                            y := 10
+                            const z = x + y // this won't compile
+
+
+                Type and Untyped Constants
+
+                    Constants can be typed or Untyped. 
+                    An untyped constant works exactly like a literal'
+                    it has no type if its iwn but does have difficult type that is
+                    used when no other type can be inferred
+
+
+                    const x = 10
+
+                    all of the following assignments are legal
+
+                    var y int = x 
+                    var z float64 = x 
+                    var d byte = x
+
+                    const typedX int = 10
+
+                    cannot use typedX (type int) as type float64 in assignment
+                
+                Unused Variables
+                    Another Go requirement is that every declared local variable must be read 
+                    compile time error to declare a local variable and to not read its value 
+
+                    PS D:\ArbinBhasimaOfficial\Golang\chapter2\assignments_not_read> ./assignments_not_read
+                    20
+
+                    while the compiler and go vet do not catch
+                    the unused assignments of 10 and 30 to x 
+                    third party tools can detect them.
+
+                    Unused Constants
+                Perhaps, the Go compiler allows you to create unread
+                constants with const. this is becuase constants in Go are
+                calculated at compile time and connot have any side effects. 
+                This makes them easy to eleminate: if a constant isn't used 
+                it is simply not included in the compiled binary
+                
+
+    2.2 Naming Variables and Constants
+        There is a difference between Go's rules for naming variables
+        and the patterns that Go developers follow when naming theri 
+        variables and constants. 
+        
+        Variable names you should never use : 
+            _0 := 0_0
+            _1 := 20
+            n := 3
+            a := "hello" //Unicode u+ff41
+
+            __ := "double underscores"
+            fmt.Println(_0)
+            fmt.Println(_1)
+            fmt.Println(n)
+            fmt.Println(a)
+            fmt.Println(__)
+
+            using look-alike code points for variable names 
+
+            func main(){
+                 a  := 'hello' // Unicode U+FF41
+                a := "goodbye" // standard lowercase a (Unicode U+0061)
+                fmt.Println(a)
+                fmt.Println(a)
+            }
+
+            output 
+            hello
+            goodbye
+
+            underscores are rarely used in variable name 
+            idiomatic Go doesn't use snale case 
+            names like (index_counter) or (number_tries)
+            instead idiomatic Go uses camel case names like
+            (indexCounter) or (numberTries)
+
+            go does not follow all upercase letter pattern 
+
+            because Go uses the case of the first letter in the name 
+            of a package-level declaration to determine if the item is 
+            accessible outside the package 
+
+            The smaller the scope for a variable, 
+            the shorter the name that's used for it 
+            it is comon in Go to see single letter variable 
+            names used as the variable names in a for - range loop
+            if you are using standard for loop, i and j are common names
+            for index variable 
+            there are other idiomatic ways to name variable of common types
+            
+            Go is stringly typed you don't need to do this to keep track of the underlying
+            type. however Go code where the first letter of a type is used as the variable
+            name for e.g : i for integers or f for floats.
+
+            Exercises 
+
+                1. wap that declares an integer variable called i with the value
+                20. Assign i to a floating point variable name f.Print out i and f.
+                    package main
+
+                    import (
+                        "fmt"
+                    )
+                    
+                    func main() {
+                        var i int = 20
+                        var f float64
+                        f = float64(i)
+                        fmt.Println(i, f)
+                    }
+                    PS D:\ArbinBhasimaOfficial\Golang\chapter2\Exercise1> ./Exercise1
+                    20 20
+                
+                2. WAP that declares a constant called value that can be assigned to both an integer 
+                and a floating point variable. Assign it to an integer called i and a floating point 
+                variable called f. Print out i and f.
+                    package main
+
+                    import "fmt"
+                    
+                    func main() {
+                        const value = 300
+                        var i int
+                        var f float64
+                        i = int(value)
+                        f = float64(value)
+                        fmt.Println(i, f)
+                    }
+                    PS D:\ArbinBhasimaOfficial\Golang\chapter2\Exercise2> ./Exercise2
+                    300 300
+            
+                3. WAP with three variables, one named b of type byte, one named smallI of type int32,
+                and one named bigI of type uint64. Assign each variable the maximum legal value for its type;
+                then add 1 to each variable. Print out their values.
+
+                    package main
+
+                    import (
+                        "fmt"
+                        "math"
+                    )
+                    
+                    func main() {
+                        var b byte = math.MaxUint8
+                        var smallI int32 = math.MaxInt32
+                        var bigI uint64 = math.MaxUint64
+                    
+                        b = b + 1
+                        smallI = smallI + 1
+                        bigI = bigI + 1
+                    
+                        fmt.Println(b, smallI, bigI)
+                    
+                    }
+                    PS D:\ArbinBhasimaOfficial\Golang\chapter2\Exercise3> ./Exercise3
+                    0 -2147483648 0
+    
