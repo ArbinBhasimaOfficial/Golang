@@ -279,3 +279,206 @@ the built in functions that support them, and the best practices for working wit
 
 
 3.7 Emptying a Slice
+    Go adds a clear function that takes in a slice and sets all of the slice's
+    elements to their zero value. The length of the slice remains unchanged.
+
+    s := []string{"first", "second", "third"}
+	fmt.Println(s, len(s))
+	clear(s)
+	fmt.Println(s, len(s))
+
+    [first second third] 3
+    [ ] 3
+
+    the zero value for a string is an empty string ""!
+
+3.8 Declaring Your Slice
+    The primary goal when declaring slices is to minimize the number of times
+    the slice needs to grow. If it's possible that the slice won't need to grow at all,
+    use a var declaration with no assigned value to create a nil slice
+
+    Declaring a slice that might stay nil
+
+    var data []int
+
+    you can create a slice using an empty slice literal:
+    var x = []int{}
+        This creates a slice with zero length and zero capacity. It is different from
+        a nil slice. Because of implementation reasons, comparing a zero-length slice to
+        nil returns false, while comparing a nil slice to nil returns true.
+
+        If you have some starting values, or if a slice's values aren't going to change,
+        then a slice literal is good choice.
+
+    Declaring a slice with default values
+
+    data := []int{2,4,6,8}
+
+3.9 Slicing Slices
+    A slice expression creates a slice from a slice.
+    It's written inside brackets and consists of a starting offset
+    and and ending offset, seperated by a colon (:).
+
+    slicing slice
+    x := []string{"a", "b", "c", "d"}
+	y := x[:2]
+	z := x[1:]
+	d := x[1:3]
+	e := x[:]
+	fmt.Println("x:", x)
+	fmt.Println("y:", y)
+	fmt.Println("z:", z)
+	fmt.Println("d:", d)
+	fmt.Println("e:", e)
+
+    x: [a b c d]
+    y: [a b]
+    z: [b c d]
+    d: [b c]
+    e: [a b c d]
+
+    When you take a slice from a slice, you are not making a copy of the data.
+
+    slices with overlapping storage
+    x := []string{"a", "b", "c", "d"}
+	y := x[:2]
+	z := x[1:]
+	x[1] = "y"
+	y[0] = "x"
+	z[1] = "z"
+	fmt.Println("x:", x)
+	fmt.Println("y:", y)
+	fmt.Println("z:", z)
+
+    x: [x y z d]
+    y: [x y]
+    z: [y z d]
+
+    Append makes overlapping slices more confusing
+    x := []string{"a", "b", "c", "d"}
+	y := x[:2]
+	fmt.Println(cap(x), cap(y))
+	y = append(y, "z")
+	fmt.Println("x:", x)
+	fmt.Println("y:", y)
+    
+    4 4
+    x: [a b z d]
+    y: [a b z]
+
+
+    whenever you take a slice from another slice, the subslice's capacity is set to the capacity
+    is set to the capacity of the original slice, minus the starting offset off the sublice within
+    the original slice.
+
+    Confusing Slices
+    x := make([]string, 0, 10)
+	x = append(x, "a", "b", "c", "d")
+	y := x[:2]
+	z := x[2:]
+	fmt.Println(cap(x), cap(y), cap(z))
+	y = append(y, "i", "j", "k")
+	x = append(x, "x")
+	z = append(z, "y")
+	fmt.Println("x:", x)
+	fmt.Println("y:", y)
+	fmt.Println("z:", z)
+    
+    10 10 8
+    x: [a b i j y]
+    y: [a b i j y]
+    z: [i j y]
+
+    to avoid complecated slice situations, you should never use append with A
+    subslice or make sure that append doesn't cause an overwrite by using 
+    a full slice expression. it makes sense because it makes clear how much memory
+    is shared beteen the parent slice and the subslice.
+
+
+    full slice expression for append cause
+
+    x := make([]string, 0, 10)
+	x = append(x, "a", "b", "c", "d")
+	y := x[:2:2]
+	z := x[2:4:4]
+	fmt.Println(cap(x), cap(y), cap(z))
+	fmt.Println("x:", x)
+	fmt.Println("y:", y)
+	fmt.Println("z:", z)
+
+    10 2 2
+    x: [a b c d]
+    y: [a b]
+    z: [c d]
+
+    both the slice shares the same memory, and changes to one are reflecte in the other
+
+3.10 copy
+    If you need to create a slice that's independent of the original, use the built in
+    copy function.
+
+    	x := []int{1, 2, 3, 4}
+        y := make([]int, 4) 
+        num := copy(y, x)   
+        fmt.Println(num, y) 
+        or copy(y, x[2:])
+
+        4 [1 2 3 4]
+
+    The copy function takes two parameters
+    the first is the destination slice
+    the second is source slice
+
+    the function copies as many values as it can
+
+    function allows you to copy between two slices that cover overlapping
+    sections of an underlyinh slice
+
+    num := copy(x[:3], x[1:])
+
+
+    Copy with arrays bt taking a slice of the array
+    x := []int{1, 2, 3, 4}
+	d := [4]int{5, 6, 7, 8}
+	y := make([]int, 2)
+	copy(y, d[:])
+	fmt.Println(y)
+	copy(d[:], x)
+	fmt.Println(d)
+
+    [5 6]
+    [1 2 3 4]
+
+    the first call to copy copies the first two calues in array d into slice y
+    the second copies all of the values in slice x into array d.
+
+3.11 Converting Arrays to Slices
+    Slices aren't the only thing you can slice. If you have an array, you can take
+    a slice from it using a slice expression.
+
+    xArray := [4]int{5,6,7,8}
+    xSlice := x[:2]
+        you can also convert a subset of an array into a slice
+    
+    x := [4]int{5,6,7,8}
+    y := x[:2]
+    z := x[2:]
+
+    be aware that taking a slice from an array has the same memory
+    sharing properties as taking a slice from a slice.
+
+
+    slice_array_memory
+    x := [4]int{5, 6, 7, 8}
+	y := x[:2]
+	z := x[2:]
+	x[0] = 10
+	fmt.Println("x:", x)
+	fmt.Println("y:", y)
+	fmt.Println("z:", z)
+
+    x: [10 6 7 8]
+    y: [10 6]
+    z: [7 8]
+
+3.12 Conerting Slices to Arrays
