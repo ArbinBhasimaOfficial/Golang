@@ -482,3 +482,475 @@ the built in functions that support them, and the best practices for working wit
     z: [7 8]
 
 3.12 Conerting Slices to Arrays
+    to convert slices to arrays,
+    use a type conversion to make an array variable from a slice
+    you can convert an entire slice to an array of the same type
+    or
+    you can create an array from a subset of the slice
+
+    the following code:
+
+    xSlice := []int{1,2,3,4}
+    xArray := [4]int(xSlice)
+    smallArray := [2]int(xSlice)
+    xSlice[0] = 10
+    fmt.Println(xSlice)
+    fmt.Println(xArray)
+    fmt.Println(smallArray)
+
+    output is 
+    [10 2 3 4]
+    [1 2 3 4]
+    [1 2]
+
+    panicArray := [5]int(xSlice)
+    fmt.Println(panicArray)
+    panic: runtime error: cannot convert slice with length 4 to array or pointer to array with length 5
+
+    goroutine 1 [running]:
+    main.main()
+            /home/ziontan/Documents/ArbinBhasimaOfficial/Golang/Golang/Chapter3/arrayConversion/main.go:13 +0x154
+    exit status 2
+
+    Slice into a pointer to an array
+    xSlice := []int{1, 2, 3, 4}
+	xArrayPointer := (*[4]int)(xSlice)
+	xSlice[0] = 10
+	xArrayPointer[1] = 20
+	fmt.Println(xSlice)
+	fmt.Println(xArrayPointer)
+
+    prints out 
+    [10 20 3 4]
+    &[10 20 3 4]    
+
+
+3.13 Strings and Runes and Bytes
+
+    just as you can extract a single value from an array or a slice
+    you can extract a single value from a string by using an
+    index expression
+
+    var s string = "Hello there"
+
+    var b byte = s[6]
+
+    like arrays and slices, string indexes are zero-based
+
+    var s string = "Hello there"
+    var s2 string = s[4:7]
+    var s3 string = s[:5]
+    var s4 string = s[6:]
+    var x string = "hello 😊"
+	var x2 string = x[4:7]
+	var x3 string = x[:5]
+	var x4 string = x[6:]
+	fmt.Println(x, x2, x3, x4)
+	fmt.Println(len(x))
+
+    Hello there 116 o t Hello there
+    hello 😊 o � hello 😊
+    10
+
+    type conversion, 
+    A single rune or byte can be converted to a string
+
+    var s string = "Hello, 😊"
+	var bs []byte = []byte(s)
+	var rs []rune = []rune(s)
+	fmt.Println(bs)
+	fmt.Println(rs)
+
+    ➜  Chapter3 git:(main) ✗ go run ./convertingStringsToSlices
+    [72 101 108 108 111 44 32 240 159 152 138]
+    [72 101 108 108 111 44 32 128522]
+
+
+    UTF-8
+    UTF-8 is the most commonly used encoding for unicode. Unicode uses 
+    four bytes(32 bits) to represent each code point.
+
+
+3.14 Maps
+    Slices are useful when you have sequential data. Like most languages,
+    Go provides a built in data type for situations where you want to 
+    associate one value to another
+
+    the map type is written as map[keyType]valueType.
+
+    var declaration to create map variable
+    var nilMap map[string]int
+
+    you can use := declaration to create a map variable by assigning it a
+    map literal:
+    totalWins := map[string]int{}
+    this is empty map literal
+
+
+    teams := map[string][]string{
+        "Orcas": []string{"Fred","Ralp","Bijou"},
+        "Lions": []string{"Sarah","Peter","Billie"},
+        "Kittens": []string{"Waldo","Raul","Ze"},
+    }
+
+    if you know how many key value pairs you intend to put in the map
+    but don't know the exact values, 
+
+    ages := make(map[int][]string, 10)
+
+    Maps created with make still have a length of 0, and they can grow
+    past the initially specified size
+
+    Maps are like slices in several ways:
+        Maps automatically grow as you add key-value pairs to them
+        If you know how many key-value pairs you plan to insert into a map
+        Passing a map to the len function tells you the number of key value
+            pairs in a map
+        The zero value for a map is nill
+        Maps are not comparable. you can check if they are equal to nil, 
+        but cannot check if two maps have identical keys and values using == or
+        differ using !=
+
+
+    What is HasH Map?
+    A Map is data structure that associates one value to another.
+    Maps can be implemented in several wats, each with its own trade offs. 
+    The map that's built into Go is hash map or hash table.
+
+3.15 Reading and Writing a Map
+    short program that declares, write, read from a map.
+    totalWins := map[string]int{}
+	totalWins["Orcas"] = 1
+	totalWins["Lions"] = 2
+	fmt.Println(totalWins["Orcas"])
+	fmt.Println(totalWins["kittens"])
+	totalWins["kittens"]++
+	fmt.Println(totalWins["kittens"])
+	totalWins["Lions"] = 3
+	fmt.Println(totalWins["Lions"])
+
+    prints out:
+    1
+    0
+    1
+    3
+
+    You assign a value to a map key by putting the ley within brackets and
+    using = to specify the value, and you read the value assigned to a map
+    key by putting the key within brackets.
+
+3.16 The comma ok Idiom
+
+    A map returns the zero value if you ask for the value associated with A
+    key that's not in the map.
+    Go provides the comma ok idiom to tell the difference between a key that's
+    associated with a zero value and a key that's not in the map
+
+    m := map[string]int{
+        "hello": 5,
+        "world: 0,
+    }
+
+    v, ok := m["hello"]
+    fmt.Println(v, ok)
+
+    prints out 
+    5 true
+
+    v, ok := m["goodbye"]
+	fmt.Println(v, ok)
+
+    prints outs:
+    0 false
+
+3.17 Deleting from Maps
+    Key value pairs are removed from a map via the built in delete function
+
+    m := map[string]int{
+        "hello": 5,
+        "world": 10,
+    }
+    delete(m, "hello")
+
+3.18 Emptying a Map
+    A Cleared map has its length set to zero, unliked cleared slice
+
+    clear(m)
+
+3.19 Comparing Maps
+    m and n map declaration
+
+    and fmt.Println(maps.Equal(m, n))
+
+
+3.20 Using Maps as sets
+    A set is data type that ensures there is at most one of a value,
+    but doesn't guarantee that the values are in particular order.
+
+    intSet := map[int]bool{}
+	vals := []int{5, 10, 2, 5, 8, 7, 3, 9, 1, 2, 10}
+	for _, v := range vals {
+		intSet[v] = true
+	}
+	fmt.Println(len(vals), len(intSet))
+	fmt.Println(intSet[5])
+	fmt.Println(intSet[500])
+	if intSet[100] {
+		fmt.Println("100 is in the set")
+	}
+    prints out 
+        11 8
+        true
+        false
+
+3.21 Structs
+    Maps are a convenient way to store some kinds of data, but they have 
+    limitations. 
+    They don't define an API since there's no way to constrain a map to allows
+    only certain keys.
+
+    when you have related data that you want to group together, 
+    you should define a struct
+
+    Most languages have a concept that's similar to a struct, and the syntax
+    that Go uses to read and write structs should look familiar
+
+
+    type person struct {
+        name string
+        age int
+        pet string
+    }
+
+
+    A struct type is defined with the keyword type, the name of the
+    struct type, the keyword struct, and a pair of braces({})
+    without braces you list fields in the struct
+
+
+    Once a struct type is declared
+
+    var fred person
+
+    A struct literal can be assigned to a variable as well
+
+    bob := person{}
+
+    Unlike maps, there is no difference between assigning an empty struct literal
+    and not assigning a value at all.
+
+    julia := person{
+        "julia",
+        40,
+        "cat",
+    }
+
+    beth := person{
+        age: 30,
+        name: "Beth,
+    }
+
+    you use the names of the fields in the struct to specify the values.
+    You cannot mix the two struct literal syles: either all fields are specified
+    with names, or none of them are.
+
+    A field in a struct is accessed with dot notation
+
+    bob.name = "Bob"
+    fmt.Println(bob.name)
+
+    package main
+
+    import "fmt"
+
+    type person struct {
+        name string
+        age  int
+        pet  string
+    }
+
+    func main() {
+        // var fred person
+        bob := person{}
+        julia := person{
+            "julia",
+            40,
+            "cat",
+        }
+        beth := person{
+            age:  30,
+            name: "Beth",
+        }
+        bob.name = "Bob"
+        fmt.Println(bob.name)
+        fmt.Println(julia)
+        fmt.Println(beth)
+    }
+
+    Bob
+    {julia 40 cat}
+    {Beth 30 }
+
+
+3.22 Anonymous Structs
+    declare that a variable implements a struct type without first giving the 
+    struct type a name is called Anonymous struct
+
+   package main
+
+    import "fmt"
+
+    func main() {
+        var person struct {
+            name string
+            age  int
+            pet  string
+        }
+
+        person.name = "bob"
+        person.age = 50
+        person.pet = "zion"
+
+        pet := struct {
+            name string
+            kind string
+        }{
+            name: "zion",
+            kind: "dog",
+        }
+
+        fmt.Println(person)
+        fmt.Println(pet)
+    }
+    prints out:
+    {bob 50 zion}
+    {zion dog}
+
+    Anonymous structs are handy intwo common situations.
+    The first is when you translate external data into a struct or 
+    a struct into external data like JSON or protocol buffers.
+
+    This is called unmarshaling and marshaling data, respectively
+
+3.23 Comparing and Converting Structs
+
+    Whether a struct is comparable depends on the structs fields.
+    Structs that are entirely composed of comparable types are comparable;
+    those with slice or map fields are not.
+
+    Unlike python or ruby, in Go there's no magic method that can be overridden
+    to redefine equality and make == and != work for incomparable structs.
+
+    Just as Go doesn't allow comparisons between variables of different primitive types,
+    Go doesn't allow comparisons between variables that represent structs
+    of different types.
+
+    type conversion from one struct type to another if the 
+    fields of both structs have the same names, order, and types.
+
+    given this struct:
+        type firstPerson struct {
+            name string
+            age int
+        }
+    
+    you can use a type conversion to convert an instance of firstPerson to 
+    secondPerson, but you can't use == to compare an instance of firstPerson 
+    and an instance of secondPerson
+
+    type secondPerson struct {
+        name string 
+        age int
+    }
+
+    you can't convert an instance of firstPerson to thirdPerson
+
+
+    type thirdPerson struct {
+        age int
+        name string
+    }
+
+    you can't convert an instance of firstPerson to fourthPerson because 
+    the field names don't match
+
+    type fourthPerson struct {
+        firstName string
+        age int 
+    }
+
+    finally, you can't convert an instance of firstPerson to fifthPerson
+    because there's an additional field:
+
+    type fifthPerson struct{
+        name string
+        age int
+        favColor string
+    }
+
+    Anonymous structs add a small twist: 
+    if two struct variables are being compared and
+    at least one has a type that's an Anonymous struct
+
+    type firstPerson struct {
+        name string
+        age int 
+    }
+    f := firstPerson{
+        name : "Bob",
+        age: 50,
+    }
+    var g struct {
+        name string
+        age int 
+    }
+
+    g = f 
+    fmt.Println( f == g)
+
+Exercises
+    1. WAP that defines a varable named greetings of type slice of
+    strings with the following values "hello", "hola", "नमस्कार", "こんにちは",
+    and "Привіт", Create a subslice containing the first two values; 
+    a second subslice with the second, third,  and fourth values; and a 
+    third subslices with the fourth and fifth values. print out all four slices.
+
+        answer: 
+        Original Slice:  [Hello Hola नमस्कार こんにちは Привіт]
+        First Sub Slice Contains: [Hello Hola]
+        Second Sub Slice Contains: [Hola नमस्कार こんにちは]
+        Third Sub Slice Contains: [こんにちは Привіт]
+
+    2. WAP that defines a string variable called message with the value 
+    "Hi 👩 and 👨" and prints the fourth rune in it as a character, not a number.
+
+        answer:
+        The fourth rune is: 👩
+
+    3. WAP that defines a struct called Employee with three fields:
+        firstName,
+        lastName
+        id 
+
+        the first two field are of type string and
+        the id is int 
+
+        create three instance of this struct using 
+        whatever values you'd like.
+
+        Initialize the first one using the struct literal style 
+        without names,
+
+        Second one using struct litral style with names
+
+        and third with a 
+        var declaration
+
+        use dot notation to populate the fields in the third struct.
+
+        print out all three structs.
+
+        answer: 
+            Employee one:  {Arbin Bhasima 101}
+            Employee two:  {Zion Sarashiki 102}
+            Employee three:  {Zizi Manon 103}
