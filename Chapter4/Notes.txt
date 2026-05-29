@@ -1,1 +1,392 @@
 Blocks, Shadows, and Control Structures
+
+
+4.1 Blocks
+    Go lets you declare variables in lots of places.
+    You can declare them outside of functions, as the parameters
+    to function, and as local variables within functions.
+
+    Each place where a declaration occurs is called block.
+    Variable, constants, types, and functions declared outside of 
+    any functions are placed in the package block.
+
+    Within a function, every set of braces ({}) defines another block,
+    and in a bit you will see that the control structures in Go defines
+    blocks of their own.
+
+    You can access an identifier defined in any outer block from within
+    any inner block.
+
+4.2 Shadowing variables
+
+    x := 10
+	if x > 5 {
+		fmt.Println(x)
+		x := 5
+		fmt.Println(x)
+	}
+	fmt.Println(x)
+
+    prints out 
+    10
+    5
+    10
+
+    A Shadowing variable is a variable that has the same name as a variable
+    in a containing block. For as long as the shadowing variable exists, you
+    cannot access a shadowed variable.
+
+
+    Shadowing with multiple assignment
+
+    x := 10
+	if x > 5 {
+		x, y := 5, 20
+		fmt.Println(x, y)
+	}
+	fmt.Println(x)
+
+    prints out: 
+    5 20
+    10
+
+    Although there was an existing definition of x in an outer block, x was
+    stil shadowed within the if statement. when using := make sure that any variable
+    from outer scope on the left hand side is not declared
+
+
+    Shadowing package names
+
+    x := 10
+	fmt.Println(x)
+	// fmt := "oops" fmt.prinln undefined type string has no field or method prinln
+	// fmt.Println(fmt)
+
+
+    The Universe Blocks
+
+    shdaowing true
+
+    fmt.Println(true)
+	true := 10
+	fmt.Println(true)
+
+    prints out 
+    true
+    10
+
+
+    YOu must be very careful to never redefine any identifier in the univers block
+    if you do, you will get some strange behavior
+    harder to detect the problem
+
+4.3 if
+    The if statement in Go is much like the if statement in most programming
+    language.
+
+    if and else 
+    n := rand.Intn(10)
+	if n == 0 {
+		fmt.Println("That's too low")
+	} else if n > 5 {
+		fmt.Println("That's too big:", n)
+	} else {
+		fmt.Println("That's a good number:", n)
+	}
+
+    prints out 
+    That's a good number: 3
+
+    The most visible diff between if statments in Go and other languages is that
+    you don't put parantheses around the condition. But Go adds another
+    feature to if statments that helps you better manage your variables.
+
+
+    scoping a variable to an if statement
+    if n := rand.Intn(10); n == 0 {
+		fmt.Println("That's too low")
+	} else if n > 5 {
+		fmt.Println("That's too big:", n)
+	} else {
+		fmt.Println("That's a good number:", n)
+	}
+    prints out
+    That's a good number: 4
+
+    Having this special scope is handy. It lets you create variable that are available only
+    where they are needed.
+
+
+    Out of scope
+
+    if n := rand.Intn(10); n == 0 {
+		fmt.Println("That's too low")
+	} else if n > 5 {
+		fmt.Println("That's too big:", n)
+	} else {
+		fmt.Println("That's a good number:", n)
+	}
+	// fmt.Println(n) // undefined: n
+
+    prints out:
+    That's a good number: 4
+
+
+    Technically, you can put any simple statement before the comparison
+    in an if statement including a function call that doesn't return A
+    value or an assignment of a new value to an existing variable.
+
+
+4.4 for, Four Ways
+    As in other languages in the C family, Go uses a for statement to loop.
+    What makes Go different from other languages is that for is the only looping 
+    keyword in the language.
+        A complete, C style for
+        A condition only for
+        An infinite for
+        for range
+
+4.5 The comnplete for statement
+
+    the first for loop style is the complete for declaration like in C, java or js
+
+    for statement example:
+    for i := 0; i < 10; i++ {
+		fmt.Println(i)
+	}
+
+    prints out:
+    0
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+
+    go allows you to leave out one or more of the three parts of the for 
+    statement. Most commonly, you'll wither leave off the initialization
+    if it is based on a value calculated before the loop
+
+    i := 0
+    for ; i < 10; i++{
+        fmt.Println(i)
+    }
+
+    or you'll leave off the increment because you have a more complicated increment rule
+    inside the loop:
+
+
+    for i := 0; i < 10; {
+        fmt.Println(i)
+        if i % 2 == 0 {
+            i++
+        } else {
+            i += 2
+        }
+    }
+
+
+4.6 The Condition-Only for statement
+    When you leave pff both the initialization and the increment in a for
+    statement, do not include the semicolons.
+
+    A condition only for statement
+
+    i := 1
+    for i < 100 {
+        fmt.Println(i)
+        i = i * 2
+    }
+
+4.7 The Infinite for statement
+    The third for statement format does away with the condition too. Go
+    has a version of a for loop that loops forever.
+
+    Infinite Looping nostalgia
+
+    for {
+		fmt.Println("Hello")
+	}
+
+    prints out:
+    hello forever untill you end it Ctrl-C
+
+4.8 break and continue
+    Go  includes the break and continue keyword which stops the loops and
+    skips over the rest of loop body and proceeds to the next iteration 
+    respectively
+
+    break:
+        do {
+            // things to do in the loop
+        } while (CONDITION);
+
+        the go version looks like this 
+        
+        for {
+            //things to do in the loop 
+            if ~CONDITION {
+                break
+            }
+        }
+    
+    continue:
+        Technically you dont need to use continue 
+        because pf code like:
+
+        for i :=1; i <= 100; i++{
+            if i%3 == 0 {
+                if i%5 == 0 {
+                    fmt.Println("FizzBuzz")
+                }else{
+                    fmt.Println("Fizz")
+                }
+            }else if i%5 == 0 {
+                fmt.Println("Buzz")
+            }else {
+                fmt.Println(i)
+            }
+        }
+
+        using continue to make code cleaner:
+        for i :=1; i <= 100; i++{
+            if i%3 == 0 && i%5 == 0 {
+                fmt.Println("FizzBuzz")
+                continue
+            }
+            if i%3 == 0 {
+                fmt.Println("Fizz")
+                continue
+            }
+            if i%5 == 0 {
+                fmt.Println("Buzz")
+                continue
+            }
+            fmt.Println(i)
+        }
+
+4.9 The for-range statement
+    The fourth for statement format is for iterating over elements in some of
+    Go's built in types. It is called a for range loop and resembles the iterators
+    found in other languages.
+
+    the for range loop
+    evenVals := []int{2, 4, 6, 8, 10, 12}
+	for i, v := range evenVals {
+		fmt.Println(i, v)
+	}
+
+    prints out 
+    0 2
+    1 4
+    2 6
+    3 8
+    4 10
+    5 12
+
+    when using for-range variations 
+    you get to loop variables:
+    The first variable is the position in the data structure being iterated
+    The second variable is the value of the position
+
+    first variable is usually called array,slice,string, i for index
+    when using in map, k is used
+    the second variable is called v for value, sometime named as type of value
+
+    if first variable is not needed then you can use _, this will tell go to ignore it
+
+    Ignoring  the slice index  in a for range loop:
+
+        evenVals := []int{2, 4, 6, 8, 10, 12}
+        for _, v := range evenVals {
+            fmt.Println(v)
+        }
+        prints out: 
+        2
+        4
+        6
+        8
+        10
+        12
+
+    If you want the key but dont want the value:
+    uniqueNames := map[string]bool{"Fred": true, "Raul": true, "Wilma": true}
+    for k := range uniqueNames {
+        fmt.Println(k)
+    } 
+
+
+    the most common reason for iterating over the key is when a map is being
+    used as a set.
+
+    Iterating over maps
+    Map iteration order varies
+        m := map[string]int{
+            "a": 1,
+            "c": 3,
+            "b": 2,
+        }
+
+        for i := 0; i < 3; i++ {
+            fmt.Println("loop", i)
+            for k, v := range m {
+                fmt.Println(k, v)
+            }
+        }
+    
+
+    prints out:
+        loop 0
+        b 2
+        a 1
+        c 3
+        loop 1
+        a 1
+        c 3
+        b 2
+        loop 2
+        c 3
+        b 2
+        a 1
+
+
+    People would write code that assumed that the order was fixed, and this code
+    would break at weird times
+
+    If maps always has items to the exact same values, and you know that a 
+    server is storing user data in a map, you can slow down a server with an
+    attack called Hash Dos by sending it specially crafted data with keys
+    that all hash to the same bucket
+
+
+    Iterating over strings
+        samples := []string{"hello", "apple_n!"}
+        for _, sample := range samples {
+            for i, r := range sample {
+                fmt.Println(i, r, string(r))
+            }
+            fmt.Println()
+        }
+
+        prints out:
+            0 104 h
+            1 101 e
+            2 108 l
+            3 108 l
+            4 111 o
+
+            0 97 a
+            1 112 p
+            2 112 p
+            3 108 l
+            4 101 e
+            5 95 _
+            6 110 n
+            7 33 !
+
+
+    The for range value is a copy
