@@ -22,9 +22,9 @@ Table Of Contents
 
 2. Predeclared Types and Declarations (Chapter2)
 
-3. Composite Types
+3. Composite Types (Chapter3)
 
-4. Blocks, Shadows and Control Structures
+4. Blocks, Shadows and Control Structures (Chapter4)
 
 5. Functions
 

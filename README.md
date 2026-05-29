@@ -1,6 +1,8 @@
 # Golang Learning Project
 
-A comprehensive Go (Golang) learning repository covering fundamental to advanced concepts.
+Notes, exercises, and runnable examples while working through [**Learning Go**](https://learning.oreilly.com/library/view/learning-go/9781098139297/) by Jon Bodner (O'Reilly).
+
+**Module:** `github.com/ArbinBhasimaOfficial/Golang` · **Go:** 1.26.3
 
 ---
 
@@ -15,21 +17,27 @@ A comprehensive Go (Golang) learning repository covering fundamental to advanced
 
 ```text
 Golang/
-├── go.mod                     # Go module definition
+├── go.mod                     # Go module (init once at repo root)
 ├── README.md                  # This file
-├── CLAUDE.md                  # Claude Code context
-├── Notes.txt                  # Table of contents
-├── Chapter1/                  # ✅ COMPLETED - Hello World & Basics
+├── CLAUDE.md                  # Agent / learning context
+├── Notes.txt                  # Book table of contents
+├── Chapter1/                  # ✅ Setting Up Your Go Environment
 │   ├── Notes.txt
 │   └── hello-world/
-│       ├── main.go            # First Go program
-│       └── Makefile           # Build automation
-└── Chapter2/                  # ✅ COMPLETED - Predeclared Types & Declarations
-    ├── Notes.txt
-    ├── Makefile
-    ├── Exercise1/             # Explicit Type Conversion
-    ├── Exercise2/             # Untyped Constants
-    └── Exercise3/             # Integer Overflow
+│       ├── main.go
+│       └── Makefile
+├── Chapter2/                  # ✅ Predeclared Types and Declarations
+│   ├── Notes.txt
+│   ├── Makefile
+│   ├── Exercise1/
+│   ├── Exercise2/
+│   └── Exercise3/
+├── Chapter3/                  # ✅ Composite Types
+│   ├── Notes.txt
+│   ├── Excercises/            # Chapter exercises (1–3)
+│   └── <topic-demos>/         # Runnable examples (slices, maps, structs, …)
+└── Chapter4/                  # 🔄 Blocks, Shadows, and Control Structures
+    └── Notes.txt
 ```
 
 ---
@@ -67,15 +75,35 @@ go run ./Exercise1   # Run Exercise 1
 go test ./...        # Run all chapter tests
 ```
 
+### Chapter 3 - Composite Types
+
+```bash
+# Run any demo from the repo root (module is at root)
+go run ./Chapter3/slicingSlices
+go run ./Chapter3/len_cap
+go run ./Chapter3/mapReadWrite
+go run ./Chapter3/structDeclaration
+
+# Chapter exercises
+go run ./Chapter3/Excercises/Excercise1
+go run ./Chapter3/Excercises/Excercise2
+go run ./Chapter3/Excercises/Excercise3
+
+# Demos with Makefiles (build only; run the binary or use go run above)
+make -C Chapter3/slicingSlices
+```
+
 ---
 
 # Topics Covered
 
 | Chapter | Status | Topics |
 |---------|--------|--------|
-| Chapter 1 | ✅ Complete | `fmt.Printf`, format verbs, Go tooling, Makefiles, `go fmt`, `go vet` |
-| Chapter 2 | ✅ Complete | Predeclared types, Zero values, Literals, Variables (`var` vs `:=`), Constants, Naming idioms |
-| Chapter 3+ | 📚 Upcoming | Composite types (Arrays, Slices, Maps), Functions, Pointers, Interfaces, Concurrency |
+| 1 | ✅ Complete | Go install & tooling, `fmt.Printf`, format verbs, Makefiles, `go fmt`, `go vet` |
+| 2 | ✅ Complete | Predeclared types, zero values, literals, `var` vs `:=`, constants, naming |
+| 3 | ✅ Complete | Arrays, slices (`len`, `cap`, `append`, `make`, `copy`), maps, structs |
+| 4 | 🔄 In progress | Blocks, shadowing, `if`/`for`/`switch`, control flow |
+| 5–16 | 📚 Upcoming | Functions, pointers, interfaces, generics, errors, concurrency, testing, … |
 
 ---
 
@@ -447,10 +475,26 @@ func main() {
 ```
 
 
-done upto Chapter 3
-make
+---
 
+## Chapter 3: Composite Types
 
+Detailed notes live in [`Chapter3/Notes.txt`](Chapter3/Notes.txt). Summary of what was covered:
+
+| Section | Topics |
+|---------|--------|
+| 3.1–3.12 | Arrays vs slices, `len` / `cap`, `append`, `make`, emptying slices, slicing, `copy`, array↔slice conversion |
+| 3.13 | Strings, runes, bytes, slicing strings |
+| 3.14–3.20 | Maps, comma-ok idiom, delete, map-as-set |
+| 3.21–3.23 | Structs, anonymous structs, comparison & conversion |
+
+**Runnable demos** (non-exhaustive): `slicingSlices`, `len_cap`, `slice_append_storage`, `emptyingASlice`, `copy_slice`, `mapReadWrite`, `commaOkIdiom`, `structDeclaration`, `anonymousStructDeclaration`, and others under `Chapter3/`.
+
+**Exercises** (in `Chapter3/Excercises/`):
+
+1. Slice subslicing with multilingual greetings  
+2. Fourth rune of a string containing emoji (`👩`, `👨`)  
+3. `Employee` struct with three initialization styles  
 
 ---
 
