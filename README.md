@@ -37,7 +37,20 @@ Golang/
 │   ├── Excercises/            # Chapter exercises (1–3)
 │   └── <topic-demos>/         # Runnable examples (slices, maps, structs, …)
 └── Chapter4/                  # 🔄 Blocks, Shadows, and Control Structures
-    └── Notes.txt
+    ├── Notes.txt
+    ├── shadowingVariable/
+    ├── shadowingMultipleAssignment/
+    ├── shadowPackageNames/
+    ├── shadowTrue/
+    ├── ifElseExample/
+    ├── scopingVariableToIfStatement/
+    ├── ifBadScope/
+    ├── forStatementEg/
+    ├── infiniteForLoop/
+    ├── forRange/
+    ├── forRangeIgnore/
+    ├── iterateMap/
+    └── iterateString/
 ```
 
 ---
@@ -93,6 +106,31 @@ go run ./Chapter3/Excercises/Excercise3
 make -C Chapter3/slicingSlices
 ```
 
+### Chapter 4 - Blocks, Shadows, and Control Structures
+
+```bash
+# Shadowing and blocks
+go run ./Chapter4/shadowingVariable
+go run ./Chapter4/shadowingMultipleAssignment
+go run ./Chapter4/shadowPackageNames
+go run ./Chapter4/shadowTrue
+
+# if statements
+go run ./Chapter4/ifElseExample
+go run ./Chapter4/scopingVariableToIfStatement
+go run ./Chapter4/ifBadScope
+
+# for loops
+go run ./Chapter4/forStatementEg
+go run ./Chapter4/infiniteForLoop    # Ctrl-C to stop
+
+# for range
+go run ./Chapter4/forRange
+go run ./Chapter4/forRangeIgnore
+go run ./Chapter4/iterateMap
+go run ./Chapter4/iterateString
+```
+
 ---
 
 # Topics Covered
@@ -102,7 +140,7 @@ make -C Chapter3/slicingSlices
 | 1 | ✅ Complete | Go install & tooling, `fmt.Printf`, format verbs, Makefiles, `go fmt`, `go vet` |
 | 2 | ✅ Complete | Predeclared types, zero values, literals, `var` vs `:=`, constants, naming |
 | 3 | ✅ Complete | Arrays, slices (`len`, `cap`, `append`, `make`, `copy`), maps, structs |
-| 4 | 🔄 In progress | Blocks, shadowing, `if`/`for`/`switch`, control flow |
+| 4 | 🔄 In progress | Blocks, variable shadowing, `if` init scope, `for` (C-style, condition-only, infinite), `break`/`continue`, `for range` (slices, maps, strings) |
 | 5–16 | 📚 Upcoming | Functions, pointers, interfaces, generics, errors, concurrency, testing, … |
 
 ---
@@ -495,6 +533,23 @@ Detailed notes live in [`Chapter3/Notes.txt`](Chapter3/Notes.txt). Summary of wh
 1. Slice subslicing with multilingual greetings  
 2. Fourth rune of a string containing emoji (`👩`, `👨`)  
 3. `Employee` struct with three initialization styles  
+
+---
+
+## Chapter 4: Blocks, Shadows, and Control Structures
+
+Detailed notes live in [`Chapter4/Notes.txt`](Chapter4/Notes.txt). Summary of what is covered so far:
+
+| Section | Topics |
+|---------|--------|
+| 4.1–4.2 | Package and inner blocks, variable shadowing, `:=` in inner blocks, shadowing package names, universe block (`true`, `false`, etc.) |
+| 4.3 | `if` / `else if` / `else`, no parens on conditions, init statement scope (`if n := …; n == 0`) |
+| 4.4–4.8 | `for` only loop keyword: C-style, condition-only, infinite; `break` and `continue` |
+| 4.9 | `for range` on slices, maps (unordered iteration), strings (runes vs bytes); `_` to ignore index or value |
+
+**Runnable demos** (under `Chapter4/`): `shadowingVariable`, `shadowingMultipleAssignment`, `shadowPackageNames`, `shadowTrue`, `ifElseExample`, `scopingVariableToIfStatement`, `ifBadScope`, `forStatementEg`, `infiniteForLoop`, `forRange`, `forRangeIgnore`, `iterateMap`, `iterateString`.
+
+**Still ahead in this chapter:** `switch` and remaining control-flow topics from the book.
 
 ---
 
