@@ -7,7 +7,7 @@ Blocks, Shadows, and Control Structures
     to function, and as local variables within functions.
 
     Each place where a declaration occurs is called block.
-    Variable, constants, types, and functions declared outside of 
+    Variable, constants, types, and functions declared outside of
     any functions are placed in the package block.
 
     Within a function, every set of braces ({}) defines another block,
@@ -27,7 +27,7 @@ Blocks, Shadows, and Control Structures
 	}
 	fmt.Println(x)
 
-    prints out 
+    prints out
     10
     5
     10
@@ -46,7 +46,7 @@ Blocks, Shadows, and Control Structures
 	}
 	fmt.Println(x)
 
-    prints out: 
+    prints out:
     5 20
     10
 
@@ -71,7 +71,7 @@ Blocks, Shadows, and Control Structures
 	true := 10
 	fmt.Println(true)
 
-    prints out 
+    prints out
     true
     10
 
@@ -84,7 +84,7 @@ Blocks, Shadows, and Control Structures
     The if statement in Go is much like the if statement in most programming
     language.
 
-    if and else 
+    if and else
     n := rand.Intn(10)
 	if n == 0 {
 		fmt.Println("That's too low")
@@ -94,7 +94,7 @@ Blocks, Shadows, and Control Structures
 		fmt.Println("That's a good number:", n)
 	}
 
-    prints out 
+    prints out
     That's a good number: 3
 
     The most visible diff between if statments in Go and other languages is that
@@ -139,7 +139,7 @@ Blocks, Shadows, and Control Structures
 
 4.4 for, Four Ways
     As in other languages in the C family, Go uses a for statement to loop.
-    What makes Go different from other languages is that for is the only looping 
+    What makes Go different from other languages is that for is the only looping
     keyword in the language.
         A complete, C style for
         A condition only for
@@ -167,7 +167,7 @@ Blocks, Shadows, and Control Structures
     8
     9
 
-    go allows you to leave out one or more of the three parts of the for 
+    go allows you to leave out one or more of the three parts of the for
     statement. Most commonly, you'll wither leave off the initialization
     if it is based on a value calculated before the loop
 
@@ -217,7 +217,7 @@ Blocks, Shadows, and Control Structures
 
 4.8 break and continue
     Go  includes the break and continue keyword which stops the loops and
-    skips over the rest of loop body and proceeds to the next iteration 
+    skips over the rest of loop body and proceeds to the next iteration
     respectively
 
     break:
@@ -225,17 +225,17 @@ Blocks, Shadows, and Control Structures
             // things to do in the loop
         } while (CONDITION);
 
-        the go version looks like this 
-        
+        the go version looks like this
+
         for {
-            //things to do in the loop 
+            //things to do in the loop
             if ~CONDITION {
                 break
             }
         }
-    
+
     continue:
-        Technically you dont need to use continue 
+        Technically you dont need to use continue
         because pf code like:
 
         for i :=1; i <= 100; i++{
@@ -280,7 +280,7 @@ Blocks, Shadows, and Control Structures
 		fmt.Println(i, v)
 	}
 
-    prints out 
+    prints out
     0 2
     1 4
     2 6
@@ -288,7 +288,7 @@ Blocks, Shadows, and Control Structures
     4 10
     5 12
 
-    when using for-range variations 
+    when using for-range variations
     you get to loop variables:
     The first variable is the position in the data structure being iterated
     The second variable is the value of the position
@@ -305,7 +305,7 @@ Blocks, Shadows, and Control Structures
         for _, v := range evenVals {
             fmt.Println(v)
         }
-        prints out: 
+        prints out:
         2
         4
         6
@@ -317,7 +317,7 @@ Blocks, Shadows, and Control Structures
     uniqueNames := map[string]bool{"Fred": true, "Raul": true, "Wilma": true}
     for k := range uniqueNames {
         fmt.Println(k)
-    } 
+    }
 
 
     the most common reason for iterating over the key is when a map is being
@@ -337,7 +337,7 @@ Blocks, Shadows, and Control Structures
                 fmt.Println(k, v)
             }
         }
-    
+
 
     prints out:
         loop 0
@@ -357,7 +357,7 @@ Blocks, Shadows, and Control Structures
     People would write code that assumed that the order was fixed, and this code
     would break at weird times
 
-    If maps always has items to the exact same values, and you know that a 
+    If maps always has items to the exact same values, and you know that a
     server is storing user data in a map, you can slow down a server with an
     attack called Hash Dos by sending it specially crafted data with keys
     that all hash to the same bucket
@@ -390,3 +390,246 @@ Blocks, Shadows, and Control Structures
 
 
     The for range value is a copy
+        You should be aware that each time the for-range loop iterates over your
+        compound type, it copies the value from the compund type to the value variable. Modifying the value variable will not modify the value in the compound type.
+
+        evenVals := []int{2, 4, 6, 8, 10, 12}
+    	for _, v := range evenVals {
+    		v *= 2
+    	}
+    	fmt.Println(evenVals)
+
+        prints out
+        [2 4 6 8 10 12]
+
+
+    Labeling your for statements
+        By default, the break and continue keywords apply to the for loop that directly contains them.
+
+            samples := []string{"hello", "apple_n!"}
+        outer:
+           	for _, sample := range samples {
+          		for i, r := range sample {
+         			fmt.Println(i, r, string(r))
+         			if r == 'l' {
+            				continue outer
+         			}
+          		}
+          		fmt.Println()
+           	}
+
+        prints out:
+            0 104 h
+            1 101 e
+            2 108 l
+            0 97 a
+            1 112 p
+            2 112 p
+            3 108 l
+        notice that the label outer is indented by go fmt to the same level as the surrounding function. labels are always indented to the same level as the braces for the block.
+
+        outer:
+            for _, outerVal := range outerValues {
+                for _, innerVal := range outerVal {
+                    // process innerVal
+                    if invalidSituation(innerVal){
+                        continue outer
+                    }
+                }
+                // here we have code that runs only when all of the
+                // innerVal values were successfully processed
+            }
+
+
+    Choosing the Right for Statement
+        A for range loop is the best way to walk through a string, since it
+        properly gives you back runes instead of bytes.
+
+        Favor a for range loop when iterating over all the contents of an instance of one of the built in compound types. It avoids a great
+        deal of boilerplate code that's required when you use an array, slice, or map with one of the other for loop styles.
+
+        When to use Complete for loop.
+            The best place for it is when you aren't iterating from the
+            first element to the last element in a compound type.
+                First the for-range loop
+                    evenVals := []int{2,4,6,8,10}
+                    for i, v := range evenVals {
+                        if i == 0{
+                            continue
+                        }
+                        if i == len(evenVals) - 1 {
+                        break
+                        }
+                    }
+
+                With standard for loop
+                    evenVals := []int{2,4,6,8,10}
+                    for i := 0; i < len(evenVals); i++ {
+                        fmt.Println(i, evenVals[i])
+                    }
+
+                The standard for loop code is both shorter and easier to understand.
+                    This pattern does not work for skipping over the beginning of a string. Remember, a standard for loop doesn't properly handle multibyte characters.
+
+    Switch
+        Like many c derived languages, Go has a switch statement.
+        few surprises on swtich statemetn.
+        words := []string{"a", "cow", "smile", "gopher", "octopus", "anthropologist"}
+
+    	for _, word := range words {
+    		switch size := len(word); size {
+    		case 1, 2, 3, 4:
+    			fmt.Println(word, "is a short word")
+    		case 5:
+    			wordLen := len(word)
+    			fmt.Println(word, "is exactly the right lendgth:", wordLen)
+    		case 6, 7, 8, 9:
+    		default:
+    			fmt.Println(word, "is a long word")
+    		}
+    	}
+
+        prints out
+        a is a short word
+        cow is a short word
+        smile is exactly the right lendgth: 5
+        anthropologist is a long word
+
+        scoping the variable size to all cases in the switch statement
+
+        proper labeling loop:
+    	for i := 0; i < 10; i++ {
+    		switch i {
+    		case 0, 2, 4, 6:
+    			fmt.Println(i, "is even")
+    		case 3:
+    			fmt.Println(i, "is divisible by 3 but not 2")
+    		case 7:
+    			fmt.Println("exit the loop!")
+    			break loop
+    		default:
+    			fmt.Println(i, "is boring")
+    		}
+    	}
+
+     Blank Switches
+        You can use switch statements in another, more powerful way. Just as Go allows you to leave out parts from a for statements declartion, you can wriite a switch statement that doesn't specify  the value that you're comparing against. This is called a blank switch.
+
+        code snippet:
+        package main
+
+        import "fmt"
+
+        func main() {
+           	words := []string{"hi", "salutations", "hello"}
+           	for _, a := range words {
+          		switch wordLen := len(a); {
+          		case wordLen < 5:
+         			fmt.Println(a, "is short word!")
+          		case wordLen >= 10:
+         			fmt.Println(a, "is long word!")
+          		default:
+         			fmt.Println(a, "is exactly the right length")
+          		}
+
+          		switch {
+          		case len(a) == 2:
+         			fmt.Println("length is 2")
+          		case len(a) == 3:
+         			fmt.Println("length is 3")
+          		case len(a) == 4:
+         			fmt.Println("length is 4")
+          		default:
+         			fmt.Println("a is ", a)
+          		}
+
+          		switch len(a) {
+          		case 2:
+         			fmt.Println("length is 2")
+          		case 3:
+         			fmt.Println("length is 3")
+          		case 4:
+         			fmt.Println("length is 4")
+          		default:
+         			fmt.Println("a is ", a)
+          		}
+           	}
+        }
+
+
+Choosing Between if and switch
+    stick with switch cases
+    for i := 1; i <= 100; i++ {
+		switch {
+		case i%3 == 0 && i%5 == 0:
+			fmt.Println("FizzBuzz")
+		case i%3 == 0:
+			fmt.Println("Fizz")
+		case i%5 == 0:
+			fmt.Println("Buzz")
+		default:
+			fmt.Println(i)
+		}
+	}
+
+	nothing in Go prevents you from doing all sorts of unrelated comparisons on each case in a blank switch. however this is not idiomatic.
+	If you find yourself in a situation where you want to do this, use series of if else statments
+
+
+
+goto --- Yes, goto
+    Go has a fourth control statement but chances are you will never use it
+    ever since edsger dijkstra go to is a black sheep of the coding family
+
+    Go's goto has rules
+
+    when to use goto:
+            a := rand.Intn(10)
+    	for a < 100 {
+    		if a%5 == 0 {
+    			goto done
+    		}
+    		a = a*2 + 1
+    	}
+    	fmt.Println("do something when the loop completes normally")
+    done:
+    	fmt.Println("do complicated studd no matter whe we left the loop")
+    	fmt.Println(a)
+
+	prints out:
+	do complicated studd no matter whe we left the loop
+	5
+
+    If you want to see a real-world example, you can take a look at the floatBits method in the file atof.go in the strconv package in the standard library. It’s too long to include in its entirety, but the method ends with this code:
+    overflow:
+    // ±Inf
+    mant = 0
+    exp = 1<<flt.expbits - 1 + flt.bias
+    overflow = true
+    out:
+    // Assemble bits.
+    bits := mant & (uint64(1)<<flt.mantbits - 1)
+    bits |= uint64((exp-flt.bias)&(1<<flt.expbits-1)) << flt.mantbits
+    if d.neg {
+    bits |= 1 << flt.mantbits << flt.expbits
+    }
+    return bits, overflow
+
+Excercises
+
+    1. Write a for loop that puts 100 random numbers between 0 and 100 into an int slice.
+
+    2. Loop over the slice you created in exercise 1. For each value in the slice, apply the2.
+    following rules:
+        a. If the value is divisible by 2, print “Two!”a.
+        b. If the value is divisible by 3, print “Three!”b.
+        c. IIf the value is divisible by 2 and 3, print “Six!”. Don’t print anything else.c.
+        d. Otherwise, print “Never mind”.
+
+    3. Start a new program. In main, declare an int variable called total. Write a for3.loop that uses a variable named i to iterate from 0 (inclusive) to 10 (exclusive).
+    The body of the for loop should be as follows:
+
+    total := total + i
+    fmt.Println(total)
+
+    After the for loop, print out the value of total. What is printed out? What is the likely bug in this code?
